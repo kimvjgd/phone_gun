@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:phone_gun/page/shot_page.dart';
 import 'package:shake/shake.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainPage(),
+      home: ShotPage(),
     );
   }
 }
@@ -30,21 +31,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
-  void shotSound() {
-    final player = AudioCache();
-    player.play('shot/sniper-rifle-5989.mp3');
-    print('shot!');
-  }
-  void reloadSound() {
-    final player = AudioCache();
-    player.play('reload/1911-reload-6248.mp3');
-    print('shot!');
-  }
-  void emptySound() {
-    final player = AudioCache();
-    player.play('empty/empty_shot.mp3');
-    print('empty shot... Plz reload!');
-  }
+
 
 
   int number = 0;
@@ -53,7 +40,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
       setState(() {
-        shotSound();
+        // shotSound();
         number++;
       });
     });
@@ -70,15 +57,6 @@ class _MainPageState extends State<MainPage> {
               '$number',
               style: TextStyle(fontSize: 50, color: Colors.black),
             ),
-            IconButton(onPressed: (){
-              shotSound();
-            }, icon: Icon(Icons.whatshot)),
-            IconButton(onPressed: (){
-              reloadSound();
-            }, icon: Icon(Icons.whatshot)),
-            IconButton(onPressed: (){
-              emptySound();
-            }, icon: Icon(Icons.whatshot))
 
           ],
         ),
