@@ -28,10 +28,14 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Choose Your Gun'),
+        backgroundColor: Colors.black,),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text('If you want to shot? \n\nThen shake your phone!\n\n',style: TextStyle(fontSize: 30),),
             GetBuilder<GunController>(builder: (controller){
               return DropdownButton(
                 value: controller.nowGun(),

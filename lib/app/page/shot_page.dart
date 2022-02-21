@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:phone_gun/app/controller/gun_controller.dart';
 import 'package:shake/shake.dart';
+import 'package:slide_to_confirm/slide_to_confirm.dart';
 
 class ShotPage extends StatefulWidget {
   const ShotPage({Key? key}) : super(key: key);
@@ -16,65 +17,86 @@ class _ShotPageState extends State<ShotPage> {
 
   @override
   void initState() {
+    Get.find<GunController>().setPlayer();
     String myGun = Hive.box('myGunBox').get('myGun', defaultValue: 'sniper');
     Get.find<GunController>().chooseGun(myGun);
 
     ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
-      setState(() {
-        // shotSound();
-        Get.find<GunController>().shotSound();
-      });
+        if (Get.find<GunController>().bullets > 0) {
+          Get.find<GunController>().shotSound();
+        } else {
+          Get.find<GunController>().emptySound();
+        }
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    double _value = 0.0;
+    Size _size = MediaQuery.of(context).size;
+    double _value = 20.0;
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Slider(
-                min: 0,
-                max: 100,
-                value: _value,
-                onChanged: (value) {
-                  setState(() {
-                    _value = value;
-                  });
-                }),
-            IconButton(
-                onPressed: () {
-                  Get.toNamed("/setting");
-                },
-                icon: Icon(Icons.settings)),
-            GetBuilder<GunController>(
-              builder: (controller) {
-                return Text(
-                  controller.nowGun(),
-                  style: TextStyle(fontSize: 50, color: Colors.black),
-                );
-              },
-            ),
-            IconButton(
-                onPressed: () {
-                  Get.find<GunController>().shotSound();
-                },
-                icon: Icon(Icons.whatshot)),
-            IconButton(
-                onPressed: () {
-                  // reloadSound();
-                  Get.find<GunController>().reloadSound();
-                },
-                icon: Icon(Icons.whatshot)),
-            IconButton(
-                onPressed: () {
-                  Get.find<GunController>().emptySound();
-                },
-                icon: Icon(Icons.whatshot)),
-          ],
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GetBuilder<GunController>(
+                builder: (controller) {
+                  return ConfirmationSlider(
+                    text: '${controller.nowGun()}         R  e  l  o  a  d',
+                    textStyle: TextStyle(color: Colors.white),
+                    foregroundColor: Colors.blueGrey,
+                    sliderButtonContent: Icon(Icons.autorenew, color: Colors.white,),
+                    backgroundColor: Colors.black,
+                    width: _size.width*0.9,
+                    onConfirmation: () => Get.find<GunController>().reloadSound(),
+                  );
+                }
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: GetBuilder<GunController>(
+                      builder: (controller) {
+                        return Text(
+                          controller.nowBullets().toString(),
+                          style: TextStyle(fontSize: 50, color: Colors.black),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Get.toNamed("/setting");
+                      },
+                      icon: Icon(Icons.settings,size: 30,)),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: IconButton(
+                        iconSize: 100,
+                        onPressed: () {
+                          if (Get.find<GunController>().bullets > 0) {
+                            Get.find<GunController>().shotSound();
+                          } else {
+                            Get.find<GunController>().emptySound();
+                          }
+                        },
+                        icon: Icon(Icons.whatshot)),
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
