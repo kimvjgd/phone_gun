@@ -19,8 +19,11 @@ dependencies:
   shake: ^2.0.0
   audioplayers: ^0.20.1
   get: ^4.6.1
-
+  camera: ^0.9.4+14
+  permission_handler: ^9.1.0
+  extended_image: ^6.0.1
   slide_to_confirm: ^1.1.0
+  vibration: ^1.7.3
 
   # hive
   hive: ^2.0.5

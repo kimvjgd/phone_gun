@@ -30,26 +30,49 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Choose Your Gun'),
-        backgroundColor: Colors.black,),
+        backgroundColor: Colors.black,
+      ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
           children: [
-            Text('If you want to shot? \n\nThen shake your phone!\n\n',style: TextStyle(fontSize: 30),),
-            GetBuilder<GunController>(builder: (controller){
-              return DropdownButton(
-                value: controller.nowGun(),
-                items: _gunList.map((value){
-                  return DropdownMenuItem(value: value,child: Text(value),);
-                }).toList(),
-                onChanged: (value){
-                  setState(() async {
-                    await Get.find<GunController>().chooseGun(value.toString());
-                    Hive.box('myGunBox').put('myGun', value);
-                  });
-                },
+            SizedBox(height: 50),
+            Center(
+              child: Text(
+                'If you want to shot? \n\nThen shake your phone!\n\n',
+                style: TextStyle(fontSize: 30),
+              ),
+            ),
+            GetBuilder<GunController>(builder: (controller) {
+              return Center(
+                child: DropdownButton(
+                  value: controller.nowGun(),
+                  items: _gunList.map((value) {
+                    return DropdownMenuItem(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() async {
+                      await Get.find<GunController>().chooseGun(value.toString());
+                      Hive.box('myGunBox').put('myGun', value);
+                    });
+                  },
+                ),
               );
             }),
+            SizedBox(height: 30,),
+            Center(child: Text('Vibration Off / On      (sorry... not for iPad)')),
+            Center(
+              child: Switch(
+                splashRadius: 100,
+                  value: GunController.to.vibMode,
+                  onChanged: (value) {
+                    setState(() {
+                      GunController.to.setVib(value);
+                    });
+                  }),
+            )
           ],
         ),
       ),

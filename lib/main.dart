@@ -1,15 +1,19 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:phone_gun/app/controller/gun_controller.dart';
+import 'package:phone_gun/app/page/camera_page.dart';
+import 'package:flutter/services.dart';
 import 'package:phone_gun/app/page/setting_page.dart';
 import 'package:phone_gun/app/page/shot_page.dart';
-import 'package:shake/shake.dart';
-import 'package:flutter/services.dart';
+
+List<CameraDescription>? cameras;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   screenSetting();
   await _initHive();
   initService();
@@ -48,6 +52,7 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: "/", page: ()=>ShotPage(), transition: Transition.rightToLeftWithFade),
         GetPage(name: "/setting", page: ()=>SettingPage(), transition: Transition.leftToRightWithFade),
+        GetPage(name: "/camera", page: ()=>CameraPage(), transition: Transition.fadeIn),
       ],
       debugShowCheckedModeBanner: false,
     );
